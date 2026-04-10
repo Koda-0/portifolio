@@ -851,7 +851,7 @@ An Ikiminia app is a digital platform that helps people manage group savings and
   if (emailEl) emailEl.addEventListener('input', () => emailEl.classList.remove('error'));
   if (msgEl) msgEl.addEventListener('input', () => msgEl.classList.remove('error'));
 
-  // Form submission with Axios
+  // Form submission with Axios (or Fetch fallback)
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -889,13 +889,28 @@ An Ikiminia app is a digital platform that helps people manage group savings and
       if (!isValid) return;
 
       try {
-        const response = await axios.post('http://localhost:5120/email', {
-          name: nameEl.value,
-          email: emailEl.value,
-          message: msgEl.value
+        let response;
+        
+        // Use Fetch API instead of Axios for better reliability
+        response = await fetch(process.env.BACKEND_URL + '/email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: nameEl.value,
+            email: emailEl.value,
+            message: msgEl.value
+          })
         });
 
-        // console.log('Response:', response.data);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // console.log('Response:', data);
         form.reset();
         
         if (successMsg) {
@@ -906,7 +921,7 @@ An Ikiminia app is a digital platform that helps people manage group savings and
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Error sending message: ' + (error.response?.data?.message || error.message));
+        alert('Error sending message: ' + error.message);
       }
     });
   }
