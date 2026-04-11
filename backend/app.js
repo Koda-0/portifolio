@@ -1,23 +1,18 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
-const PORT = process.env.PORT;
+
 const app = express();
-const userRoutes = require('./router/userrouter');
+const userRoutes = require('../backend/router/userrouter');
 
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+
 app.use('/', userRoutes);
 
-app.use(express.static(path.join(__dirname, '../')));
-
-
 app.get('/', (req, res) => {
-    res.send("Welcome to the backend server");
+    res.send("Welcome to the backend server 🚀");
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app;
