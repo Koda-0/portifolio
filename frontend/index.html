@@ -891,8 +891,9 @@ An Ikiminia app is a digital platform that helps people manage group savings and
       try {
         let response;
         
-        // Use Fetch API instead of Axios for better reliability
-        response = await fetch('http://localhost:5120/email', {
+        const apiBaseUrl = window.location.port === '5501' ? 'http://localhost:5120' : '';
+
+        response = await fetch(`${apiBaseUrl}/email`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
