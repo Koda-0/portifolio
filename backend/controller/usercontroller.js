@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-require('dotenv').config();
+
 const transporter = nodemailer.createTransport({
   service: process.env.SERVICE,
   auth: {
@@ -12,7 +12,7 @@ exports.sendEmail = async (req, res) => {
   const { name, email, message } = req.body;
 
   const emailOptions = {
-    from: email,
+    from: `"${name}" <${process.env.APP_USER}>`,
     to: process.env.RECIPIENT,
     subject: `Message from ${name}`,
     text: message,
